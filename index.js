@@ -1,13 +1,9 @@
-const express = require("express");
-const pool = require("./db");
 require("dotenv").config();
 
-const app = express();
-app.get("/users", async (req, res) => {
-  const result = await pool.query("SELECT * FROM users");
-  res.json(result.rows);
-});
+const app = require("./src/app");
 
-app.listen(process.env.PORT, () => {
-  console.log("Server running on port 3000");
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
 });
