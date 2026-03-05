@@ -4,7 +4,7 @@ const pool = require("../config/db");
 const getAllSocieties = async () => {
   const result = await pool.query(`
     SELECT s.id, s.name, s.address, s.status, s.description, s.created_at,
-           u.id AS admin_id, u.name AS admin_name, u.email AS admin_email
+           u.id AS admin_id, u.name AS admin_name, u.email AS admin_email, u.phone AS admin_phone
     FROM societies s
     LEFT JOIN users u ON s.admin_id = u.id
   `);
@@ -27,9 +27,9 @@ const createSociety = async (admin, society) => {
 
     // Step 2: Insert admin user linked to society
     const adminResult = await client.query(
-      `INSERT INTO users (name, email, password, society_id, role, status)
+      `INSERT INTO users (name, email,phone, password, society_id, role, status)
        VALUES ($1, $2, $3, $4, 'admin', 'pending') RETURNING id`,
-      [admin.name, admin.email, admin.password, societyId]
+      [admin.name, admin.email,admin.phone, admin.password, societyId]
     );
     const adminId = adminResult.rows[0].id;
 

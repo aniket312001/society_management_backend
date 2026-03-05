@@ -8,6 +8,7 @@ const addUser = async (user) => {
     [
       user.name,
       user.email,
+      user.phone,
       user.password,
       user.society_id,
       user.role || 'member',
@@ -20,7 +21,7 @@ const addUser = async (user) => {
 // READ all users in a society
 const getUsersBySociety = async (societyId) => {
   const result = await pool.query(
-    `SELECT id, name, email, role, status, created_at 
+    `SELECT id, name, email,phone, role, status, created_at 
      FROM users WHERE society_id = $1`,
     [societyId]
   );
