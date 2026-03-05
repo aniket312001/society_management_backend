@@ -1,0 +1,28 @@
+-- Create societies table
+CREATE TABLE societies (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    address VARCHAR(250) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    status VARCHAR(50) NOT NULL DEFAULT 'pending',  -- pending / active / rejected
+    description VARCHAR(300)
+);
+
+-- Create users table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    society_id INT,
+    role VARCHAR(50) DEFAULT 'member',              -- member / admin
+    status VARCHAR(50) DEFAULT 'pending',           -- pending = first time login, reject = admin blocked
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE
+);
+
+-- Add admin_id to societies table AFTER users table exists
+ALTER TABLE societies
+ADD COLUMN admin_id INT,
+ADD CONSTRAINT fk_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL;
