@@ -4,7 +4,7 @@ const pool = require("../config/db");
 const addUser = async (user) => {
   const result = await pool.query(
     `INSERT INTO users (name, email, password, society_id, role, status)
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
     [
       user.name,
       user.email,
@@ -15,6 +15,7 @@ const addUser = async (user) => {
       user.status || 'pending'
     ]
   );
+
   return result.rows[0];
 };
 
@@ -57,4 +58,17 @@ const deleteUser = async (id) => {
   return result.rows[0];
 };
 
-module.exports = { addUser, getUsersBySociety, updateUser, deleteUser };
+
+const getUserById = async (id) => {
+
+  const result = await pool.query(
+    `SELECT id, name, email, phone, role, status, society_id, created_at
+     FROM users
+     WHERE id = $1`,
+    [id]
+  );
+
+  return result.rows[0];
+};
+
+module.exports = { addUser, getUsersBySociety, updateUser, deleteUser,getUserById };

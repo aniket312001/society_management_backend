@@ -10,6 +10,22 @@ const getSocieties = async (req, res) => {
   }
 };
 
+
+const getMySociety = async (req, res) => {
+  try {
+
+    const societyId = req.user.society_id;
+
+    const society = await societyService.getSocietyById(societyId);
+
+    res.json(society);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 const createSociety = async (req, res) => {
   try {
     const { admin, society } = req.body;
@@ -44,4 +60,4 @@ const deleteSocieties = async (req, res) => {
   }
 };
 
-module.exports = { getSocieties, createSociety, updateSocieties, deleteSocieties };
+module.exports = { getSocieties, createSociety, updateSocieties, deleteSocieties,getMySociety };

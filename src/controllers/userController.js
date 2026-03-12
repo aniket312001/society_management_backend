@@ -49,4 +49,19 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { addUser, getUsers, updateUser, deleteUser };
+const getMyProfile = async (req, res) => {
+  try {
+
+    const userId = req.user.id;
+
+    const user = await userService.getUserById(userId);
+
+    res.json(user);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { addUser, getUsers, updateUser, deleteUser,getMyProfile };

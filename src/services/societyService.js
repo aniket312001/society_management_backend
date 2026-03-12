@@ -18,6 +18,10 @@ const getSocieties = async () => {
   }));
 };
 
+const getSocietyById = async (id) => {
+  return await societyModel.getSocietyById(id);
+};
+
 // Create society + admin
 const addSociety = async (admin, society) => {
   return await societyModel.createSociety(admin, society);
@@ -33,4 +37,4 @@ const deleteSociety = async (id) => {
   return await societyModel.deleteSociety(id);
 };
 
-module.exports = { getSocieties, addSociety, updateSociety, deleteSociety };
+module.exports = { getSocieties, addSociety, updateSociety, deleteSociety,getSocietyById };

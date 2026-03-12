@@ -1,5 +1,6 @@
 const pool = require("../config/db");
-
+const hash = require("./../utils/hash");
+const jwtUtil = require("../utils/jwt");
 // Get all societies with admin info
 const getAllSocieties = async () => {
   const result = await pool.query(`
@@ -25,11 +26,14 @@ const createSociety = async (admin, society) => {
     );
     const societyId = societyResult.rows[0].id;
 
+
+    var newHashPassword = await hash.hashPassword(admin.password);
+
     // Step 2: Insert admin user linked to society
     const adminResult = await client.query(
       `INSERT INTO users (name, email,phone, password, society_id, role, status)
-       VALUES ($1, $2, $3, $4, 'admin', 'pending') RETURNING id`,
-      [admin.name, admin.email,admin.phone, admin.password, societyId]
+       VALUES ($1, $2, $3, $4, $5, 'admin', 'pending') RETURNING id`,
+      [admin.name, admin.email,admin.phone, newHashPassword, societyId]
     );
     const adminId = adminResult.rows[0].id;
 
@@ -41,7 +45,14 @@ const createSociety = async (admin, society) => {
 
     await client.query("COMMIT");
 
+    const token = jwtUtil.generateToken({
+      id: adminId,
+      role: "admin",
+      society_id: societyId
+    });
+
     return {
+      token: token,
       society: { id: societyId, ...society, admin_id: adminId },
       admin: { id: adminId, ...admin, society_id: societyId }
     };
@@ -51,6 +62,20 @@ const createSociety = async (admin, society) => {
   } finally {
     client.release();
   }
+};
+
+
+const getSocietyById = async (id) => {
+
+  const result = await pool.query(`
+    SELECT s.id, s.name, s.address, s.status, s.description,
+           u.name AS admin_name, u.email AS admin_email
+    FROM societies s
+    LEFT JOIN users u ON s.admin_id = u.id
+    WHERE s.id = $1
+  `, [id]);
+
+  return result.rows[0];
 };
 
 
@@ -81,4 +106,4 @@ const deleteSociety = async (id) => {
   return result.rows[0];
 };
 
-module.exports = { getAllSocieties, createSociety, updateSociety, deleteSociety };
+module.exports = { getAllSocieties, createSociety, updateSociety, deleteSociety,getSocietyById };
