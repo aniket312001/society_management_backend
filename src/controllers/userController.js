@@ -51,6 +51,7 @@ const deleteUser = async (req, res) => {
 
 const getMyProfile = async (req, res) => {
   try {
+    console.log("in my profile");
 
     const userId = req.user.id;
 

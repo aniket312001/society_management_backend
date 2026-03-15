@@ -15,6 +15,71 @@ const checkAuth = async (req, res) => {
 };
 
 
+const sendEmailOtp = async (req, res) => {
+  try {
+
+    const { email } = req.body;
+
+    const result = await authService.sendEmailOtp(email);
+
+    res.json(result);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const verifyEmailOtp = async (req, res) => {
+
+  try {
+
+    const { email, otp } = req.body;
+
+    const result = await authService.verifyEmailOtp(email, otp);
+
+    res.json(result);
+
+  } catch (error) {
+
+    res.status(400).json({ message: error.message });
+
+  }
+};
+
+const sendPhoneOtp = async (req, res) => {
+
+  try {
+
+    const { phone } = req.body;
+
+    const result = await authService.sendPhoneOtp(phone);
+
+    res.json(result);
+
+  } catch (error) {
+
+    res.status(500).json({ message: error.message });
+
+  }
+};
+
+const verifyPhoneOtp = async (req, res) => {
+
+  try {
+
+    const { phone, otp } = req.body;
+
+    const result = await authService.verifyPhoneOtp(phone, otp);
+
+    res.json(result);
+
+  } catch (error) {
+
+    res.status(400).json({ message: error.message });
+
+  }
+};
+
 
 const emailLogin = async (req, res) => {
   try {
@@ -55,4 +120,7 @@ const setPassword = async (req, res) => {
 };
 
 
-module.exports = { checkAuth, emailLogin, phoneLogin, setPassword};
+module.exports = { checkAuth, emailLogin, phoneLogin, setPassword, sendEmailOtp,
+  verifyEmailOtp,
+  sendPhoneOtp,
+  verifyPhoneOtp};

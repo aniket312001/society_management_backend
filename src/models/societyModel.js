@@ -14,9 +14,20 @@ const getAllSocieties = async () => {
 
 // Create society + admin user
 const createSociety = async (admin, society) => {
+  console.log("in createSociety");
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+
+    // 🔹 Check if email or phone already exists
+    const existingUser = await client.query(
+      `SELECT id FROM users WHERE email = $1 OR phone = $2`,
+      [admin.email, admin.phone]
+    );
+
+    if (existingUser.rows.length > 0) {
+      throw new Error("Admin with this email or phone already exists");
+    }
 
     // Step 1: Insert society without admin_id
     const societyResult = await client.query(
@@ -53,7 +64,7 @@ const createSociety = async (admin, society) => {
 
     return {
       token: token,
-      society: { id: societyId, ...society, admin_id: adminId },
+      society: { id: societyId, ...society, admin_id: adminId, status: "pending" },
       admin: { id: adminId, ...admin, society_id: societyId }
     };
   } catch (err) {

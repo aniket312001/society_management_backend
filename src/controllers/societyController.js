@@ -28,11 +28,18 @@ const getMySociety = async (req, res) => {
 
 const createSociety = async (req, res) => {
   try {
+    console.log("In CreateSOcity");
     const { admin, society } = req.body;
     const result = await societyService.addSociety(admin, society);
     res.json(result);
   } catch (error) {
+
     console.error(error);
+   if (error.message.includes("already exists")) {
+      return res.status(400).json({ message: error.message });
+    }
+  
+  
     res.status(500).json({ message: "Server error" });
   }
 };

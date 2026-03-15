@@ -105,11 +105,70 @@ const setNewPassword = async (email, password) => {
     message: "Password set successfully",
     user: updatedUser
   };
+  
+};
+
+const sendEmailOtp = async (email) => {
+
+  const otp = "123456"; // dummy
+
+  otpStore.saveOtp(email, otp);
+
+  console.log("Email OTP:", otp);
+
+  return {
+    message: "OTP sent to email",
+  };
+};
+
+const verifyEmailOtp = async (email, otp) => {
+
+  const valid = otpStore.verifyOtp(email, otp);
+
+  if (!valid) {
+    throw new Error("Invalid or expired OTP");
+  }
+
+  return {
+    message: "Email verified successfully",
+  };
+};
+
+const sendPhoneOtp = async (phone) => {
+
+  const otp = "123456";
+
+  otpStore.saveOtp(phone, otp);
+
+  console.log("Phone OTP:", otp);
+
+  return {
+    message: "OTP sent to phone",
+  };
+};
+
+const verifyPhoneOtp = async (phone, otp) => {
+
+  const valid = otpStore.verifyOtp(phone, otp);
+
+  if (!valid) {
+    throw new Error("Invalid or expired OTP");
+  }
+
+  return {
+    message: "Phone verified successfully",
+  };
 };
 
 module.exports = {
   checkAuth,
   checkEmailLogin,
   checkPhoneLogin,
-  setNewPassword
+  setNewPassword,
+
+  verifyPhoneOtp,
+  sendPhoneOtp,
+  sendEmailOtp,
+  verifyEmailOtp
+
 };
