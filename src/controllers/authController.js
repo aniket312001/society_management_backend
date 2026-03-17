@@ -19,6 +19,7 @@ const sendEmailOtp = async (req, res) => {
   try {
 
     const { email } = req.body;
+    console.log("email ", email);
 
     const result = await authService.sendEmailOtp(email);
 

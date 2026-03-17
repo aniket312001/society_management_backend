@@ -17,7 +17,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     society_id INT,
     role VARCHAR(50) DEFAULT 'member',              -- member / admin
-    status VARCHAR(50) DEFAULT 'pending',           -- pending = first time login, reject = admin blocked
+    status VARCHAR(50) DEFAULT 'pending',           -- pending = first time login, rejected = admin blocked, active
     created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (society_id) REFERENCES societies(id) ON DELETE CASCADE
 );

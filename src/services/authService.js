@@ -2,6 +2,8 @@ const authModel = require("../models/authModel");
 const hash = require("../utils/hash");
 
 const jwtUtil = require("../utils/jwt");
+
+const  otpStore = require("../utils/otpStore");
 // Check user exists
 const checkAuth = async (email, phone, isEmailLogin) => {
 
@@ -21,7 +23,10 @@ const checkAuth = async (email, phone, isEmailLogin) => {
     exists: true,
     status: user.status,
     role: user.role,
-    society_id: user.society_id
+    society_id: user.society_id,
+    id: user.id,
+    email: user.email,
+    phone: user.phone
   };
 };
 
@@ -118,6 +123,7 @@ const sendEmailOtp = async (email) => {
 
   return {
     message: "OTP sent to email",
+    success: true
   };
 };
 
@@ -131,6 +137,7 @@ const verifyEmailOtp = async (email, otp) => {
 
   return {
     message: "Email verified successfully",
+     success: true
   };
 };
 
@@ -144,6 +151,7 @@ const sendPhoneOtp = async (phone) => {
 
   return {
     message: "OTP sent to phone",
+     success: true
   };
 };
 
@@ -157,6 +165,7 @@ const verifyPhoneOtp = async (phone, otp) => {
 
   return {
     message: "Phone verified successfully",
+     success: true
   };
 };
 
