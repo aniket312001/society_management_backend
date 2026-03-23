@@ -26,3 +26,62 @@ CREATE TABLE users (
 ALTER TABLE societies
 ADD COLUMN admin_id INT,
 ADD CONSTRAINT fk_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL;
+
+
+
+-- ============================================================
+--  NEW TABLES: visitors, announcements, posts, likes, comments
+-- ============================================================
+
+-- Visitor requests (any member adds; admin approves/rejects)
+CREATE TABLE visitors (
+    id          SERIAL PRIMARY KEY,
+    society_id  INT NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
+    added_by    INT NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
+    name        VARCHAR(100) NOT NULL,
+    phone       VARCHAR(20),
+    purpose     VARCHAR(300),
+    visit_date  DATE NOT NULL,
+    status      VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending / approved / rejected
+    note        VARCHAR(300),                             -- admin note on approve/reject
+    created_at  TIMESTAMP DEFAULT NOW()
+);
+
+-- Announcements (admin creates; visible only within display window)
+CREATE TABLE announcements (
+    id           SERIAL PRIMARY KEY,
+    society_id   INT NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
+    created_by   INT NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
+    title        VARCHAR(200) NOT NULL,
+    body         TEXT         NOT NULL,
+    start_date   DATE         NOT NULL,
+    end_date     DATE         NOT NULL,
+    created_at   TIMESTAMP DEFAULT NOW()
+);
+
+-- Posts (social feed for society members)
+CREATE TABLE posts (
+    id          SERIAL PRIMARY KEY,
+    society_id  INT  NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
+    user_id     INT  NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
+    content     TEXT NOT NULL,
+    created_at  TIMESTAMP DEFAULT NOW()
+);
+
+-- Likes (one per user per post)
+CREATE TABLE post_likes (
+    id         SERIAL PRIMARY KEY,
+    post_id    INT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    user_id    INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE (post_id, user_id)
+);
+
+-- Comments on posts
+CREATE TABLE post_comments (
+    id         SERIAL PRIMARY KEY,
+    post_id    INT  NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    user_id    INT  NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content    TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);

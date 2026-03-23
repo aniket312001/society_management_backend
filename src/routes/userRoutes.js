@@ -8,10 +8,11 @@ const verifyToken = require("../middleware/authMiddleware");
 router.post("/user",verifyToken, userController.addUser);
 
 // READ users by society
-router.get("/users/:societyId",verifyToken, userController.getUsers);
+router.get("/users",verifyToken, userController.getUsers);
 
 // UPDATE user
-router.put("/user/:id",verifyToken, userController.updateUser);
+router.patch("/user/:id",verifyToken, userController.updateUser);
+router.patch("/user-reset-password/:id", userController.updatePassword);
 
 // DELETE user
 router.delete("/user/:id",verifyToken, userController.deleteUser);

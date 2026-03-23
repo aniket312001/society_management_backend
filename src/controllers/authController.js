@@ -88,20 +88,21 @@ const emailLogin = async (req, res) => {
     const result = await authService.checkEmailLogin(email, password);
     res.json(result);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("error - ", error);
+    res.status(500).json({ message: error.message || "Something went wrong", });
   }
 };
 
 const phoneLogin = async (req, res) => {
   try {
-    const { phone, otp } = req.params;
+    const { phone, otp } = req.body;
+    console.log("phone otp ", phone);
    
     const result = await authService.checkPhoneLogin(phone, otp);
     res.json(result);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message || "Something went wrong", });
   }
 };
 

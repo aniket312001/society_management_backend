@@ -19,6 +19,12 @@ const checkAuth = async (email, phone, isEmailLogin) => {
     return { exists: false };
   }
 
+  if(!isEmailLogin) {
+      const otp = "123456"; // dummy
+
+    otpStore.saveOtp(phone, otp);
+  }
+
   return {
     exists: true,
     status: user.status,
@@ -52,16 +58,20 @@ const checkEmailLogin = async (email, password) => {
   return {
     message: "Login success",
     token: token,
-    user: {
-      id: user.id,
-      role: user.role,
-      society_id: user.society_id
-    }
+    user: user
   };
 };
 
 // Phone login (OTP example)
 const checkPhoneLogin = async (phone, otp) => {
+
+   const valid = otpStore.verifyOtp(phone, otp);
+
+  if (!valid) {
+    throw new Error("Invalid or expired OTP");
+  }
+
+
 
   const user = await authModel.findByPhone(phone);
 
@@ -69,10 +79,10 @@ const checkPhoneLogin = async (phone, otp) => {
     throw new Error("User not found");
   }
 
-  // Demo OTP
-  if (otp !== "1234") {
-    throw new Error("Invalid OTP");
-  }
+  // // Demo OTP
+  // if (otp !== "123456") {
+  //   throw new Error("Invalid OTP");
+  // }
 
 
   const token = jwtUtil.generateToken(user);
@@ -80,11 +90,7 @@ const checkPhoneLogin = async (phone, otp) => {
     return {
     message: "Login success",
     token: token,
-    user: {
-        id: user.id,
-        role: user.role,
-        society_id: user.society_id
-    }
+    user: user
     };
     
 };
