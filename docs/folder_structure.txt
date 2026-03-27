@@ -4,23 +4,30 @@ backend/
 │   ├── config/
 │   │     db.js
 │   │
-│   ├── controllers/
-│   │     userController.js
+│   ├── exceptions/
+│   │     app.error.js
 │   │
-│   ├── routes/
-│   │     userRoutes.js
-│   │
-│   ├── models/
-│   │     userModel.js
+│   ├── helpers/
+│   │     asyncHandler.js
+│   │     dbErrorHandler.js
 │   │
 │   ├── middleware/
-│   │     authMiddleware.js
+│   │     auth.middleware.js
+│   │     error.middleware.js
 │   │
-│   ├── services/
-│   │     userService.js
+│   ├── features/
+│   │      │──users/
+│   │         users.controller.js
+│   │         users.routes.js
+│   │         users.model.js
+│   │         users.service.js
+│   │   
 │   │
 │   ├── utils/
 │   │     helpers.js
+│   │     optStore.js
+│   │     hash.js
+│   │     jwt.js
 │   │
 │   └── app.js
 │

@@ -1,13 +1,13 @@
 const express = require("express");
 const cors = require("cors");
 
-const userRoutes         = require("./routes/userRoutes");
-const societyRoutes      = require("./routes/societyRoutes");
-const authRoutes         = require("./routes/authRoutes");
-const visitorRoutes      = require("./routes/visitorRoutes");
-const announcementRoutes = require("./routes/announcementRoutes");
-const postRoutes         = require("./routes/postRoutes");
-
+const userRoutes         = require("./features/users/users.routes");
+const societyRoutes      = require("./features/societies/society.routes");
+const authRoutes         = require("./features/auth/auth.routes");
+const visitorRoutes      = require("./features/visitors/visitors.routes");
+const announcementRoutes = require("./features/announcement/announcement.routes");
+const postRoutes         = require("./features/post/post.routes");
+const errorMiddleware = require("./middleware/errorMiddleware");
 const app = express();
 
 app.use(cors());
@@ -19,5 +19,7 @@ app.use("/api", authRoutes);
 app.use("/api", visitorRoutes);
 app.use("/api", announcementRoutes);
 app.use("/api", postRoutes);
+
+app.use(errorMiddleware);
 
 module.exports = app;
