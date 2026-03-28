@@ -10,6 +10,50 @@ const createVisitor = async (visitor) => {
   return result.rows[0];
 };
 
+const updateVisitor = async (id, visitor) => {
+  const fields = [];
+  const values = [];
+  let paramIndex = 1;
+
+  // Build dynamic update query safely
+  if (visitor.name !== undefined) {
+    fields.push(`name = $${paramIndex++}`);
+    values.push(visitor.name);
+  }
+  if (visitor.phone !== undefined) {
+    fields.push(`phone = $${paramIndex++}`);
+    values.push(visitor.phone);
+  }
+  if (visitor.purpose !== undefined) {
+    fields.push(`purpose = $${paramIndex++}`);
+    values.push(visitor.purpose);
+  }
+  if (visitor.visit_date !== undefined) {
+    fields.push(`visit_date = $${paramIndex++}`);
+    values.push(visitor.visit_date);
+  }
+  if (visitor.society_id !== undefined) {
+    fields.push(`society_id = $${paramIndex++}`);
+    values.push(visitor.society_id);
+  }
+
+  if (fields.length === 0) {
+    throw new Error("No fields to update");
+  }
+
+  values.push(id); // for WHERE clause
+
+  const query = `
+    UPDATE visitors 
+    SET ${fields.join(", ")}
+    WHERE id = $${paramIndex}
+    RETURNING *
+  `;
+
+  const result = await pool.query(query, values);
+  return result.rows[0];
+};
+
 const getVisitorsBySociety = async (societyId, page, limit, filters) => {
   const offset = (page - 1) * limit;
   let query = `
@@ -73,4 +117,4 @@ const deleteVisitor = async (id) => {
   return result.rows[0];
 };
 
-module.exports = { createVisitor, getVisitorsBySociety, getVisitorById, updateVisitorStatus, deleteVisitor };
+module.exports = { createVisitor, getVisitorsBySociety, getVisitorById, updateVisitorStatus, deleteVisitor,updateVisitor };

@@ -6,8 +6,8 @@ const societyRoutes      = require("./features/societies/society.routes");
 const authRoutes         = require("./features/auth/auth.routes");
 const visitorRoutes      = require("./features/visitors/visitors.routes");
 const announcementRoutes = require("./features/announcement/announcement.routes");
-const postRoutes         = require("./features/post/post.routes");
-const errorMiddleware = require("./middleware/errorMiddleware");
+const postRoutes         = require("./features/posts/post.routes");
+const errorMiddleware = require("./middleware/error.middleware");
 const app = express();
 
 app.use(cors());

@@ -1,5 +1,4 @@
 const postModel = require("./post.model");
-
 // ─── Posts ────────────────────────────────────────────────────
 
 const createPost = async (data) => {

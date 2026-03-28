@@ -8,9 +8,9 @@ router.use(verifyToken);
 // Must come before /:id to avoid route conflict
 router.get("/announcements/active",  announcementController.getActiveAnnouncements);
 
-router.post("/announcements",        announcementController.createAnnouncement);
-router.get("/announcements",         announcementController.getAllAnnouncements);
-router.put("/announcements/:id",     announcementController.updateAnnouncement);
-router.delete("/announcements/:id",  announcementController.deleteAnnouncement);
+router.post("/announcements",    verifyToken,    announcementController.createAnnouncement);
+router.get("/announcements",       verifyToken,   announcementController.getAllAnnouncements);
+router.put("/announcements/:id",   verifyToken,   announcementController.updateAnnouncement);
+router.delete("/announcements/:id", verifyToken,  announcementController.deleteAnnouncement);
 
 module.exports = router;

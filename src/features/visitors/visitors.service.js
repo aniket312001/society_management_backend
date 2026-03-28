@@ -12,6 +12,10 @@ const getVisitor = async (id) => {
   return await visitorModel.getVisitorById(id);
 };
 
+const updateVisitor = async (id, data) => {
+  return await visitorModel.updateVisitor(id, data);
+};
+
 const updateStatus = async (id, status, note) => {
   const allowed = ["approved", "rejected"];
   if (!allowed.includes(status)) {
@@ -24,4 +28,4 @@ const removeVisitor = async (id) => {
   return await visitorModel.deleteVisitor(id);
 };
 
-module.exports = { addVisitor, getVisitors, getVisitor, updateStatus, removeVisitor };
+module.exports = { addVisitor, getVisitors, getVisitor, updateStatus, removeVisitor,updateVisitor };

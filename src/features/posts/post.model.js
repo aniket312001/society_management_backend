@@ -14,13 +14,14 @@ const createPost = async (data) => {
 
 const getPostsBySociety = async (societyId, page, limit, requestingUserId) => {
   const offset = (page - 1) * limit;
+
   const result = await pool.query(
     `SELECT
        p.*,
-       u.name         AS author_name,
-       COUNT(DISTINCT pl.id)  AS like_count,
-       COUNT(DISTINCT pc.id)  AS comment_count,
-       BOOL_OR(pl.user_id = $3) AS liked_by_me
+       u.name                  AS author_name,
+       COUNT(DISTINCT pl.id)   AS like_count,
+       COUNT(DISTINCT pc.id)   AS comment_count,
+       BOOL_OR(pl.user_id = $2) AS liked_by_me     -- Changed from $3 to $2
      FROM posts p
      JOIN users u ON p.user_id = u.id
      LEFT JOIN post_likes    pl ON pl.post_id = p.id
@@ -28,12 +29,12 @@ const getPostsBySociety = async (societyId, page, limit, requestingUserId) => {
      WHERE p.society_id = $1
      GROUP BY p.id, u.name
      ORDER BY p.created_at DESC
-     LIMIT $4 OFFSET $5`,
-    [societyId, societyId, requestingUserId, limit, offset]
+     LIMIT $3 OFFSET $4`,                         
+    [societyId, requestingUserId, limit, offset]   // 4 parameters in correct order
   );
+
   return result.rows;
 };
-
 const getPostById = async (id) => {
   const result = await pool.query(
     `SELECT p.*, u.name AS author_name

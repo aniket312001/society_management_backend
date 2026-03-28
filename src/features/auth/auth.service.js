@@ -1,9 +1,9 @@
 const authModel = require("./auth.model");
-const hash = require("../utils/hash");
+const hash = require("../../utils/hash");
 
-const jwtUtil = require("../utils/jwt");
+const jwtUtil = require("../../utils/jwt");
 
-const  otpStore = require("../utils/otpStore");
+const  otpStore = require("../../utils/otpStore");
 // Check user exists
 const checkAuth = async (email, phone, isEmailLogin) => {
 
