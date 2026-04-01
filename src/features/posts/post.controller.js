@@ -1,9 +1,8 @@
 const postService = require("./post.service");
 const asyncHandler = require("../../helpers/asyncHandler");
 const AppError = require("../../exceptions/app.error");
-
 const createPost = asyncHandler(async (req, res) => {
-  const { content } = req.body;
+  const { content, file_url, file_type } = req.body;
 
   if (!content?.trim())
     throw new AppError("Content is required", 400, "content");
@@ -11,10 +10,23 @@ const createPost = asyncHandler(async (req, res) => {
   if (content.trim().length > 2000)
     throw new AppError("Content max 2000 characters", 400, "content");
 
+  // Validate file_type if provided
+  if (file_type && !["image", "video"].includes(file_type))
+    throw new AppError("file_type must be 'image' or 'video'", 400, "file_type");
+
+  // file_url required if file_type is given, and vice versa
+  if (file_url && !file_type)
+    throw new AppError("file_type is required when file_url is provided", 400, "file_type");
+
+  if (file_type && !file_url)
+    throw new AppError("file_url is required when file_type is provided", 400, "file_url");
+
   const post = await postService.createPost({
     society_id: req.user.society_id,
     user_id:    req.user.id,
     content:    content.trim(),
+    file_url:   file_url  ?? null,
+    file_type:  file_type ?? null,
   });
 
   res.status(201).json({ success: true, data: post });

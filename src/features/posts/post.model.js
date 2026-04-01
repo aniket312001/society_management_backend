@@ -4,24 +4,31 @@ const pool = require("../../config/db");
 
 const createPost = async (data) => {
   const result = await pool.query(
-    `INSERT INTO posts (society_id, user_id, content)
-     VALUES ($1, $2, $3)
+    `INSERT INTO posts (society_id, user_id, content, file_url, file_type)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [data.society_id, data.user_id, data.content]
+    [data.society_id, data.user_id, data.content, data.file_url ?? null, data.file_type ?? null]
   );
   return result.rows[0];
 };
+
 
 const getPostsBySociety = async (societyId, page, limit, requestingUserId) => {
   const offset = (page - 1) * limit;
 
   const result = await pool.query(
     `SELECT
-       p.*,
-       u.name                  AS author_name,
-       COUNT(DISTINCT pl.id)   AS like_count,
-       COUNT(DISTINCT pc.id)   AS comment_count,
-       BOOL_OR(pl.user_id = $2) AS liked_by_me     -- Changed from $3 to $2
+       p.id,
+       p.society_id,
+       p.user_id,
+       p.content,
+       p.file_url,
+       p.file_type,
+       p.created_at,
+       u.name                   AS author_name,
+       COUNT(DISTINCT pl.id)    AS like_count,
+       COUNT(DISTINCT pc.id)    AS comment_count,
+       BOOL_OR(pl.user_id = $2) AS liked_by_me
      FROM posts p
      JOIN users u ON p.user_id = u.id
      LEFT JOIN post_likes    pl ON pl.post_id = p.id
@@ -29,12 +36,13 @@ const getPostsBySociety = async (societyId, page, limit, requestingUserId) => {
      WHERE p.society_id = $1
      GROUP BY p.id, u.name
      ORDER BY p.created_at DESC
-     LIMIT $3 OFFSET $4`,                         
-    [societyId, requestingUserId, limit, offset]   // 4 parameters in correct order
+     LIMIT $3 OFFSET $4`,
+    [societyId, requestingUserId, limit, offset]
   );
 
   return result.rows;
 };
+
 const getPostById = async (id) => {
   const result = await pool.query(
     `SELECT p.*, u.name AS author_name

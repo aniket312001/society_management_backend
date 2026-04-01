@@ -65,6 +65,8 @@ CREATE TABLE posts (
     society_id  INT  NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
     user_id     INT  NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
     content     TEXT NOT NULL,
+    file_url    TEXT,
+    file_type  VARCHAR(10) CHECK (file_type IS NULL OR file_type IN ('image', 'video')),
     created_at  TIMESTAMP DEFAULT NOW()
 );
 
